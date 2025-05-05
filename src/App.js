@@ -94,6 +94,8 @@ const App = () => {
         isOpen={isModalConfirmacionOpen}
         onClose={() => setIsModalConfirmacionOpen(false)}
         contentClassName="max-w-lg w-full"
+        disableBackdropClick={false}
+        showCloseButton={true}
       >
         <ModalConfirmacion />
       </Modal>
@@ -103,6 +105,8 @@ const App = () => {
         isOpen={isFormularioOpen}
         onClose={() => setIsModalFormularioOpen(false)}
         contentClassName="max-w-lg w-full"
+        disableBackdropClick={false}
+        showCloseButton={true}
       >
         <ModalFormulario />
       </Modal>
@@ -112,6 +116,8 @@ const App = () => {
         isOpen={isGaleriaOpen}
         onClose={() => setIsModalGaleriaOpen(false)}
         contentClassName="max-w-3xl w-full"
+        disableBackdropClick={false}
+        showCloseButton={true}
       >
         <ModalGaleria />
       </Modal>
