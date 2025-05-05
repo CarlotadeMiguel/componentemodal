@@ -1,32 +1,52 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-const Modal = ({ isOpen, onClose }) => {
-  // Si isOpen es false, no renderizar nada
-  if (!isOpen) return null;
+const Modal = ({ isOpen, onClose, children }) => {
+  const [showModal, setShowModal] = useState(false);
+  const [animateIn, setAnimateIn] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setShowModal(true);
+      // Activar animación después de montar
+      setTimeout(() => setAnimateIn(true), 10);
+    } else {
+      setAnimateIn(false);
+      // Esperar fin de animación para desmontar
+      const timer = setTimeout(() => setShowModal(false), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [onClose]);
+
+  if (!showModal) return null;
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      className={`fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-500 ease-in-out ${
+        animateIn ? 'opacity-100 bg-black bg-opacity-50' : 'opacity-0 bg-black bg-opacity-0'
+      } backdrop-blur-sm`}
       onClick={onClose}
     >
-      {/* El contenedor principal del modal */}
       <div
-        className="bg-white p-8 rounded-lg relative"
-        onClick={(e) => e.stopPropagation()} // Evitar que se cierre al hacer clic dentro
+        className={`bg-white p-8 rounded-lg relative transform transition-transform duration-500 ease-in-out ${
+          animateIn ? 'translate-y-0' : '-translate-y-full'
+        }`}
+        onClick={(e) => e.stopPropagation()}
       >
-        {/* Botón de cierre */}
         <button
           className="absolute top-2 right-2 text-2xl font-bold"
           onClick={onClose}
         >
           ✕
         </button>
-
-        {/* Aquí iría el contenido del modal */}
-        <div>
-          <h2 className="text-xl font-semibold">Este es el Modal</h2>
-          <p>Contenido del modal...</p>
-        </div>
+        {children}
       </div>
     </div>
   );
